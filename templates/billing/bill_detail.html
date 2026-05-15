@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Bill {{ bill.bill_number }}{% endblock %}
+{% block page_title %}Bill Detail{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header d-flex justify-content-between">
+        <strong>{{ bill.bill_number }}</strong>
+        <span class="badge bg-{% if bill.status == 'active' %}success{% else %}danger{% endif %}">
+            {{ bill.status|upper }}
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <p><strong>Patient:</strong> {{ bill.patient_name|default:"Walk-in" }}</p>
+                <p><strong>Doctor:</strong> {{ bill.doctor_name|default:"-" }}</p>
+            </div>
+            <div class="col-md-4">
+                <p><strong>Cashier:</strong> {{ bill.cashier }}</p>
+                <p><strong>Payment:</strong> {{ bill.get_payment_mode_display }}</p>
+            </div>
+            <div class="col-md-4">
+                <p><strong>Date:</strong> {{ bill.created_at|date:"d M Y, h:i A" }}</p>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead class="table-success">
+                <tr>
+                    <th>#</th>
+                    <th>Drug</th>
+                    <th>Batch</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>GST</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.drug.name }}</td>
+                    <td>{{ item.batch.batch_number }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.selling_price }}</td>
+                    <td>{{ item.discount }}%</td>
+                    <td>₹{{ item.cgst|add:item.sgst }}</td>
+                    <td><strong>₹{{ item.total }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="table-light">
+                <tr>
+                    <td colspan="7" class="text-end"><strong>Subtotal</strong></td>
+                    <td><strong>₹{{ bill.subtotal }}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="text-end"><strong>GST</strong></td>
+                    <td><strong>₹{{ bill.gst_amount }}</strong></td>
+                </tr>
+                <tr class="table-success">
+                    <td colspan="7" class="text-end"><strong>Total</strong></td>
+                    <td><strong>₹{{ bill.total_amount }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+        {% if bill.status == 'active' %}
+        <a href="/billing/{{ bill.id }}/cancel/" class="btn btn-danger">
+            <i class="bi bi-x-circle me-1"></i>Cancel Bill
+        </a>
+        {% endif %}
+        <a href="/billing/{{ bill.id }}/pdf/" class="btn btn-danger" target="_blank">
+            <i class="bi bi-file-pdf me-1"></i>Download PDF
+        </a>
+        <a href="/billing/" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Bills
+        </a>
+        {% if bill.status == 'cancelled' and bill.cancel_reason %}
+        <div class="alert alert-danger mt-3">
+            <strong>Cancellation Reason:</strong> {{ bill.cancel_reason }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

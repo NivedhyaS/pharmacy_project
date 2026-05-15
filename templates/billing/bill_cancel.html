@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Cancel Bill{% endblock %}
+{% block page_title %}Cancel Bill{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm" style="max-width:500px;">
+    <div class="card-header bg-danger text-white">
+        <i class="bi bi-x-circle me-2"></i>Cancel Bill — {{ bill.bill_number }}
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Cancelling this bill will <strong>restore stock</strong> for all items.
+            This action cannot be undone.
+        </div>
+        <p><strong>Patient:</strong> {{ bill.patient_name|default:"Walk-in" }}</p>
+        <p><strong>Total:</strong> ₹{{ bill.total_amount }}</p>
+        <p><strong>Date:</strong> {{ bill.created_at|date:"d M Y" }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Reason for Cancellation *</label>
+                <textarea name="reason" class="form-control" rows="3" placeholder="Enter reason..." required></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-circle me-1"></i>Confirm Cancel
+                </button>
+                <a href="/billing/{{ bill.id }}/" class="btn btn-secondary">
+                    Go Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

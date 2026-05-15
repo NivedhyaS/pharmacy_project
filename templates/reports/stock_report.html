@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Stock Report{% endblock %}
+{% block page_title %}Stock Report{% endblock %}
+
+{% block content %}
+{% if low_stock %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>{{ low_stock|length }} drug(s)</strong> are below minimum stock level!
+</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header">
+        <i class="bi bi-boxes me-2"></i>Current Stock Levels
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Drug</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Current Stock</th>
+                    <th>Min Stock</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drug in drugs %}
+                <tr class="{% if drug.is_low_stock %}table-danger{% endif %}">
+                    <td><strong>{{ drug.name }}</strong></td>
+                    <td>{{ drug.brand }}</td>
+                    <td>{{ drug.category }}</td>
+                    <td>
+                        <span class="badge bg-{% if drug.is_low_stock %}danger{% else %}success{% endif %}">
+                            {{ drug.current_stock }}
+                        </span>
+                    </td>
+                    <td>{{ drug.min_stock }}</td>
+                    <td>
+                        {% if drug.is_low_stock %}
+                        <span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Low Stock</span>
+                        {% else %}
+                        <span class="text-success"><i class="bi bi-check-circle"></i> OK</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No drugs found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

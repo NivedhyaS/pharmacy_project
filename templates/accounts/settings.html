@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Shop Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Shop Info -->
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-shop me-2"></i>Shop Information
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Shop Name *</label>
+                        <input type="text" name="shop_name" class="form-control" value="{{ settings.shop_name }}"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" class="form-control" rows="3">{{ settings.address }}</textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ settings.phone }}">
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ settings.email }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">GST Number</label>
+                        <input type="text" name="gst_number" class="form-control" value="{{ settings.gst_number }}"
+                            placeholder="32XXXXX1234X1ZX">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shop Logo</label>
+                        {% if settings.logo %}
+                        <div class="mb-2">
+                            <img src="{{ settings.logo.url }}" height="60" class="border rounded p-1">
+                        </div>
+                        {% endif %}
+                        <input type="file" name="logo" class="form-control" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i>Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Info -->
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>System Info
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">System</td>
+                        <td><strong>PharmaCare v1.0</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Framework</td>
+                        <td><strong>Django 4.x</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Database</td>
+                        <td><strong>PostgreSQL</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Last Updated</td>
+                        <td><strong>{{ settings.updated_at|date:"d M Y" }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header">
+                <i class="bi bi-people me-2"></i>Quick Links
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="/accounts/users/" class="btn btn-outline-success">
+                    <i class="bi bi-people me-2"></i>Manage Users
+                </a>
+                <a href="/reports/" class="btn btn-outline-primary">
+                    <i class="bi bi-bar-chart me-2"></i>View Reports
+                </a>
+                <a href="/admin/" class="btn btn-outline-secondary">
+                    <i class="bi bi-gear me-2"></i>Django Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

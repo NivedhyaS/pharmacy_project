@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Medicine Locator{% endblock %}
+{% block page_title %}Medicine Locator{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="input-group">
+                <input type="text" name="q" value="{{ query }}" class="form-control form-control-lg"
+                    placeholder="Search medicine by name or brand...">
+                <button class="btn btn-success" type="submit">
+                    <i class="bi bi-search me-1"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if query %}
+{% if drugs %}
+<div class="row">
+    {% for drug in drugs %}
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <strong>{{ drug.name }}</strong>
+            </div>
+            <div class="card-body">
+                <p><i class="bi bi-tag me-2"></i><strong>Brand:</strong> {{ drug.brand }}</p>
+                <p><i class="bi bi-grid me-2"></i><strong>Category:</strong> {{ drug.category }}</p>
+                <hr>
+                <h6 class="text-success">Location</h6>
+                <p><strong>Rack:</strong> {{ drug.rack_number }}</p>
+                <p><strong>Row:</strong> {{ drug.row }}</p>
+                <p><strong>Shelf:</strong> {{ drug.shelf }}</p>
+                <p><strong>Section:</strong> {{ drug.section }}</p>
+                <hr>
+                <p><strong>Current Stock:</strong>
+                    <span class="badge bg-{% if drug.is_low_stock %}danger{% else %}success{% endif %}">
+                        {{ drug.current_stock }} units
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-circle me-2"></i>
+    No medicine found for "<strong>{{ query }}</strong>"
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

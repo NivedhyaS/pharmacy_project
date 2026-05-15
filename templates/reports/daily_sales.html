@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Daily Sales{% endblock %}
+{% block page_title %}Daily Sales Report{% endblock %}
+
+{% block content %}
+<!-- Date Filter -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="d-flex gap-2 align-items-end">
+            <div>
+                <label class="form-label">Select Date</label>
+                <input type="date" name="date" class="form-control" value="{{ selected_date|date:'Y-m-d' }}">
+            </div>
+            <button type="submit" class="btn btn-success">View</button>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h6 class="text-muted">Total Bills</h6>
+            <h2 class="text-primary">{{ total_bills }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h6 class="text-muted">Total Sales</h6>
+            <h2 class="text-success">₹{{ total_sales }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h6 class="text-muted">GST Collected</h6>
+            <h2 class="text-warning">₹{{ total_gst }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Bills Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header">
+        <i class="bi bi-list me-2"></i>Bills on {{ selected_date }}
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Bill No</th>
+                    <th>Patient</th>
+                    <th>Cashier</th>
+                    <th>Payment</th>
+                    <th>GST</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in bills %}
+                <tr>
+                    <td><a href="/billing/{{ bill.id }}/">{{ bill.bill_number }}</a></td>
+                    <td>{{ bill.patient_name|default:"Walk-in" }}</td>
+                    <td>{{ bill.cashier }}</td>
+                    <td>{{ bill.get_payment_mode_display }}</td>
+                    <td>₹{{ bill.gst_amount }}</td>
+                    <td><strong>₹{{ bill.total_amount }}</strong></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No bills on {{ selected_date }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

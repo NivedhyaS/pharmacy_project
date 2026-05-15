@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Expiry Report{% endblock %}
+{% block page_title %}Expiry Report{% endblock %}
+
+{% block content %}
+
+{% if expired %}
+<div class="card border-0 shadow-sm mb-4 border-danger">
+    <div class="card-header bg-danger text-white">
+        ⛔ Expired Drugs ({{ expired|length }})
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Drug</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in expired %}
+                <tr>
+                    <td>{{ b.drug.name }}</td>
+                    <td>{{ b.batch_number }}</td>
+                    <td class="text-danger">{{ b.expiry_date }}</td>
+                    <td>{{ b.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if batches_30 %}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-danger text-white">
+        🔴 Expiring within 30 days ({{ batches_30|length }})
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Drug</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in batches_30 %}
+                <tr>
+                    <td>{{ b.drug.name }}</td>
+                    <td>{{ b.batch_number }}</td>
+                    <td class="text-danger">{{ b.expiry_date }}</td>
+                    <td>{{ b.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if batches_60 %}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-warning">
+        🟡 Expiring within 60 days ({{ batches_60|length }})
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Drug</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in batches_60 %}
+                <tr>
+                    <td>{{ b.drug.name }}</td>
+                    <td>{{ b.batch_number }}</td>
+                    <td class="text-warning">{{ b.expiry_date }}</td>
+                    <td>{{ b.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if batches_90 %}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-info text-white">
+        🔵 Expiring within 90 days ({{ batches_90|length }})
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Drug</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in batches_90 %}
+                <tr>
+                    <td>{{ b.drug.name }}</td>
+                    <td>{{ b.batch_number }}</td>
+                    <td>{{ b.expiry_date }}</td>
+                    <td>{{ b.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if not expired and not batches_30 and not batches_60 and not batches_90 %}
+<div class="alert alert-success">
+    <i class="bi bi-check-circle me-2"></i>No expiry issues found!
+</div>
+{% endif %}
+
+{% endblock %}

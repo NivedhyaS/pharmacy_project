@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Bills{% endblock %}
+{% block page_title %}Bill List{% endblock %}
+
+{% block content %}
+<!-- Search & Filter -->
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-4">
+                <input type="text" name="q" value="{{ query }}" class="form-control"
+                    placeholder="Search Bill No, Patient, Doctor...">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="date" value="{{ date }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-search me-1"></i>Search
+                </button>
+            </div>
+            <div class="col-md-1">
+                <a href="/billing/" class="btn btn-secondary w-100">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-journal me-2"></i>All Bills</span>
+        <a href="/billing/new/" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle me-1"></i>New Bill
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Bill No</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Cashier</th>
+                    <th>Payment</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in bills %}
+                <tr>
+                    <td><strong>{{ bill.bill_number }}</strong></td>
+                    <td>{{ bill.patient_name|default:"-" }}</td>
+                    <td>{{ bill.doctor_name|default:"-" }}</td>
+                    <td>{{ bill.cashier }}</td>
+                    <td>{{ bill.get_payment_mode_display }}</td>
+                    <td><strong>₹{{ bill.total_amount }}</strong></td>
+                    <td>{{ bill.created_at|date:"d M Y" }}</td>
+                    <td>
+                        {% if bill.status == 'active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/billing/{{ bill.id }}/" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">No bills found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
