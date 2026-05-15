@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-pharmacy-secret-key-2026'
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['Nivedhya.pythonanywhere.com','127.0.0.1']
+DEBUG = config('DEBUG', default=True, cast=bool)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
 
 # Application definition
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,14 +83,10 @@ WSGI_APPLICATION = 'pharmacy.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Nivedhya$pharmacy_db',
-        'USER': 'Nivedhya',
-        'PASSWORD': '',
-        'HOST': 'Nivedhya.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default='sqlite:///db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
 # Password validation
@@ -125,6 +125,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = '/accounts/login/'
