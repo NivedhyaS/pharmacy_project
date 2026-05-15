@@ -28,6 +28,10 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://pharmacyproject-production-7207.up.railway.app",
+]
+
 
 # Application definition
 
