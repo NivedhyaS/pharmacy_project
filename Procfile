@@ -1,1 +1,1 @@
-web: gunicorn pharmacy.wsgi --log-file -
+web: python manage.py migrate --noinput && gunicorn pharmacy.wsgi --log-file -
